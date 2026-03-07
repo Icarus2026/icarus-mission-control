@@ -1,0 +1,315 @@
+.dashboard {
+    animation: fadeIn var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    margin-bottom: 0.5rem;
+}
+
+.greeting {
+    font-size: 2.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.metricCard {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.metricCard:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+}
+
+.metricHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.metricValue {
+    font-size: 2rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.metricLabel {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    font-weight: 400;
+    font-family: var(--font-sans);
+}
+
+.metricTrend {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--bg-surface-hover);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.trendPositive {
+    color: var(--accent-vero);
+}
+
+.trendNeutral {
+    color: var(--text-secondary);
+}
+
+/* Card Accents */
+.cardIcarus::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-icarus);
+    box-shadow: 0 0 10px var(--accent-icarus-glow);
+}
+
+.cardIcarus .icon {
+    color: var(--accent-icarus);
+}
+
+.cardVero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-vero);
+    box-shadow: 0 0 10px var(--accent-vero-glow);
+}
+
+.cardVero .icon {
+    color: var(--accent-vero);
+}
+
+.cardLumova::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-lumova);
+    box-shadow: 0 0 10px var(--accent-lumova-glow);
+}
+
+.cardLumova .icon {
+    color: var(--accent-lumova);
+}
+
+.cardAdmin::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--text-secondary);
+}
+
+.cardAdmin .icon {
+    color: var(--text-secondary);
+}
+
+
+/* Live Activity Feed */
+.feedSection {
+    margin-top: 1rem;
+}
+
+.feedHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.feedTitle {
+    font-size: 1.25rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.liveIndicator {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-vero);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-vero);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+.feedList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.feedItem {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-surface);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.feedItem:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--border-subtle);
+}
+
+.feedTime {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    min-width: 60px;
+    padding-top: 0.1rem;
+}
+
+.feedContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.feedMessage {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.feedMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+}
+
+.badge {
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.badgeIcarus {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-icarus);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.badgeVero {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--accent-vero);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badgeLumova {
+    background: rgba(168, 85, 247, 0.1);
+    color: var(--accent-lumova);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.badgeMick {
+    background: rgba(100, 116, 139, 0.15);
+    color: var(--text-secondary);
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* Status Dots */
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 0.4rem;
+    flex-shrink: 0;
+}
+
+.dotActive {
+    background-color: var(--accent-vero);
+    box-shadow: 0 0 5px var(--accent-vero-glow);
+}
+
+.dotPending {
+    background-color: #f59e0b;
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+}
+
+.dotError {
+    background-color: #ef4444;
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+}
+
+.dotIdle {
+    background-color: var(--text-tertiary);
+}

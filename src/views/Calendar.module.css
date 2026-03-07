@@ -1,0 +1,287 @@
+/* Import react-big-calendar base styles to be customized */
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+.calendarView {
+    animation: fadeIn var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.header {
+    margin-bottom: 1.5rem;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* Customizing React Big Calendar for Dark Mode */
+.calendarContainer {
+    flex: 1;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    min-height: 500px;
+}
+
+/* Base Overrides */
+:global(.rbc-calendar) {
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+}
+
+:global(.rbc-toolbar) {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+:global(.rbc-toolbar button) {
+    color: var(--text-primary);
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 1rem;
+    transition: all var(--transition-fast);
+    box-shadow: none;
+}
+
+:global(.rbc-toolbar button:hover) {
+    background: var(--glass-bg);
+    border-color: var(--border-strong);
+}
+
+:global(.rbc-toolbar button:active),
+:global(.rbc-toolbar button.rbc-active) {
+    background: var(--accent-vero);
+    color: #fff;
+    border-color: var(--accent-vero);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+:global(.rbc-toolbar-label) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+}
+
+/* Grid & Borders */
+:global(.rbc-month-view),
+:global(.rbc-time-view),
+:global(.rbc-time-header),
+:global(.rbc-time-content),
+:global(.rbc-day-bg),
+:global(.rbc-month-row),
+:global(.rbc-time-slot) {
+    border-color: var(--border-light) !important;
+}
+
+:global(.rbc-header) {
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding: 0.75rem 0;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+:global(.rbc-off-range-bg) {
+    background: rgba(16, 16, 20, 0.4);
+}
+
+:global(.rbc-today) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+:global(.rbc-button-link) {
+    color: var(--text-secondary);
+    padding: 0.25rem;
+}
+
+/* Custom Events */
+.eventWrapper {
+    border-radius: var(--radius-sm);
+    padding: 0.15rem 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: transform var(--transition-fast);
+}
+
+.eventWrapper:hover {
+    transform: scale(1.02);
+    z-index: 10;
+}
+
+.eventIcarus {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--accent-icarus);
+    color: var(--accent-icarus);
+}
+
+.eventVero {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--accent-vero);
+    color: var(--accent-vero);
+}
+
+.eventLumova {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: var(--accent-lumova);
+    color: var(--accent-lumova);
+}
+
+.eventAdmin {
+    background: rgba(100, 116, 139, 0.2);
+    border-color: var(--text-secondary);
+    color: var(--text-secondary);
+}
+
+/* Remove default event styling to use purely custom wrapper */
+:global(.rbc-event) {
+    background-color: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Selected Event Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+    background: var(--bg-base);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 450px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Modal Brand Strips */
+.modalContent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.modalIcarus::before {
+    background: var(--accent-icarus);
+    box-shadow: 0 0 10px var(--accent-icarus-glow);
+}
+
+.modalVero::before {
+    background: var(--accent-vero);
+    box-shadow: 0 0 10px var(--accent-vero-glow);
+}
+
+.modalLumova::before {
+    background: var(--accent-lumova);
+    box-shadow: 0 0 10px var(--accent-lumova-glow);
+}
+
+.modalAdmin::before {
+    background: var(--text-secondary);
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--text-primary);
+    padding-right: 1rem;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.closeBtn:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+}
+
+.modalBody {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modalDetail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.modalTypeBadge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--bg-surface-hover);
+}

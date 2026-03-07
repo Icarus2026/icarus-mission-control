@@ -1,0 +1,303 @@
+.teamView {
+    animation: fadeIn var(--transition-normal);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 2rem;
+}
+
+.header {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.title {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Org Chart Container */
+.orgChart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    position: relative;
+}
+
+/* Master Agent (Mick) */
+.masterAgent {
+    width: 100%;
+    max-width: 450px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    z-index: 2;
+    transition: transform var(--transition-normal);
+}
+
+.masterAgent:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-icarus);
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+}
+
+/* Connecting Lines */
+.orgChart::before {
+    content: '';
+    position: absolute;
+    top: 150px;
+    /* Adjust based on Master Agent height */
+    left: 50%;
+    width: 2px;
+    height: 3rem;
+    background: var(--border-strong);
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.departmentsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    position: relative;
+}
+
+/* Horizontal connecting line for departments */
+.departmentsContainer::before {
+    content: '';
+    position: absolute;
+    top: -3rem;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: var(--border-strong);
+    z-index: 1;
+}
+
+.department {
+    background: rgba(16, 16, 20, 0.4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+}
+
+/* Vertical line dropping down to department */
+.department::before {
+    content: '';
+    position: absolute;
+    top: -3rem;
+    left: 50%;
+    width: 2px;
+    height: 3rem;
+    background: var(--border-strong);
+    transform: translateX(-50%);
+}
+
+.deptHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 0.75rem;
+}
+
+.deptTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.deptIcon {
+    color: var(--text-tertiary);
+}
+
+.agentList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Agent Card Styles */
+.agentCard {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all var(--transition-fast);
+}
+
+.agentCard:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-surface-hover);
+}
+
+.agentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.agentInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.masterAvatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent-icarus);
+    color: var(--accent-icarus);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.agentName {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.masterName {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.agentRole {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.masterRole {
+    color: var(--accent-icarus);
+    font-weight: 500;
+}
+
+/* Status Indicators */
+.statusBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-subtle);
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.statusOnline .statusDot {
+    background: var(--accent-vero);
+    /* Green */
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.statusBusy .statusDot {
+    background: var(--accent-lumova);
+    /* Purple/Active */
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+}
+
+.statusIdle .statusDot {
+    background: var(--text-tertiary);
+    /* Gray */
+}
+
+/* Task and Activity */
+.agentTask {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+}
+
+.agentFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.lastActive {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.performanceMetrics {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.metricValue {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.metricLabel {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+}
