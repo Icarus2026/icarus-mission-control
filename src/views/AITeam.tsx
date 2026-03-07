@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Network, Database, PenTool, Cpu, Activity, Clock, Zap } from 'lucide-react';
 import styles from './AITeam.module.css';
 

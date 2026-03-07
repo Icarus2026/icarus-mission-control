@@ -202,21 +202,21 @@
 }
 
 .platformLinkedIn {
-    color: #0a66c2;
-    background: rgba(10, 102, 194, 0.1);
-    border-color: rgba(10, 102, 194, 0.2);
+    color: var(--color-linkedin);
+    background: color-mix(in srgb, var(--color-linkedin) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-linkedin) 20%, transparent);
 }
 
 .platformInstagram {
-    color: #e1306c;
-    background: rgba(225, 48, 108, 0.1);
-    border-color: rgba(225, 48, 108, 0.2);
+    color: var(--color-instagram);
+    background: color-mix(in srgb, var(--color-instagram) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-instagram) 20%, transparent);
 }
 
 .platformTikTok {
-    color: #25F4EE;
-    background: rgba(37, 244, 238, 0.1);
-    border-color: rgba(37, 244, 238, 0.2);
+    color: var(--color-tiktok);
+    background: color-mix(in srgb, var(--color-tiktok) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-tiktok) 20%, transparent);
 }
 
 .cardFooter {

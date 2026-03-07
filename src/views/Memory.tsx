@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, FileText, CalendarDays, X, ChevronRight } from 'lucide-react';
 import styles from './Memory.module.css';
 
@@ -236,7 +236,7 @@ export default function MemoryView() {
                                 </div>
                                 <h2 className={styles.modalTitle}>{selectedDoc.title}</h2>
                             </div>
-                            <button className={styles.closeBtn} onClick={() => setSelectedDoc(null)}>
+                            <button className={styles.closeBtn} onClick={() => setSelectedDoc(null)} aria-label="Close document">
                                 <X size={20} />
                             </button>
                         </div>

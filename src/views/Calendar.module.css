@@ -64,9 +64,9 @@
 :global(.rbc-toolbar button:active),
 :global(.rbc-toolbar button.rbc-active) {
     background: var(--accent-vero);
-    color: #fff;
+    color: var(--text-primary);
     border-color: var(--accent-vero);
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent-vero) 30%, transparent);
 }
 
 :global(.rbc-toolbar-label) {
@@ -116,7 +116,7 @@
     font-size: 0.75rem;
     font-weight: 500;
     border: 1px solid transparent;
-    color: #fff;
+    color: var(--text-primary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -186,6 +186,7 @@
     overflow: hidden;
     position: relative;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
 }
 
 @keyframes slideUp {

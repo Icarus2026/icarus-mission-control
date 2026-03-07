@@ -221,7 +221,7 @@ input:checked+.slider:before {
 }
 
 .statusDisconnected {
-    color: #ef4444;
+    color: var(--color-danger);
     /* Red */
 }
 
@@ -237,8 +237,8 @@ input:checked+.slider:before {
 }
 
 .statusDisconnected .statusDot {
-    background: #ef4444;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+    background: var(--color-danger);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-danger) 50%, transparent);
 }
 
 /* Agent Configuration */

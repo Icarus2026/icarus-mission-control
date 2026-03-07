@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer, type View } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale/en-US';
@@ -150,7 +150,7 @@ export default function CalendarView() {
                     >
                         <div className={styles.modalHeader}>
                             <h3 className={styles.modalTitle}>{selectedEvent.title}</h3>
-                            <button className={styles.closeBtn} onClick={() => setSelectedEvent(null)}>
+                            <button className={styles.closeBtn} onClick={() => setSelectedEvent(null)} aria-label="Close event details">
                                 <X size={20} />
                             </button>
                         </div>

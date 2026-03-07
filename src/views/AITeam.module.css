@@ -197,10 +197,7 @@
 
 .masterName {
     font-size: 1.5rem;
-    background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-primary);
 }
 
 .agentRole {
@@ -237,13 +234,13 @@
 .statusOnline .statusDot {
     background: var(--accent-vero);
     /* Green */
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent-vero) 50%, transparent);
 }
 
 .statusBusy .statusDot {
     background: var(--accent-lumova);
     /* Purple/Active */
-    box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent-lumova) 50%, transparent);
 }
 
 .statusIdle .statusDot {

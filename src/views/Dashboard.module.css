@@ -301,13 +301,13 @@
 }
 
 .dotPending {
-    background-color: #f59e0b;
-    box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+    background-color: var(--color-warning);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .dotError {
-    background-color: #ef4444;
-    box-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+    background-color: var(--color-danger);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--color-danger) 30%, transparent);
 }
 
 .dotIdle {

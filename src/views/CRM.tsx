@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Mail, Phone, MapPin, X } from 'lucide-react';
 import styles from './CRM.module.css';
 
@@ -211,7 +211,7 @@ export default function CRMView() {
                                     </div>
                                 </div>
                             </div>
-                            <button className={styles.closeBtn} onClick={() => setSelectedContact(null)}>
+                            <button className={styles.closeBtn} onClick={() => setSelectedContact(null)} aria-label="Close contact details">
                                 <X size={20} />
                             </button>
                         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { Filter, Clock, ListFilter } from 'lucide-react';
 import styles from './TasksBoard.module.css';

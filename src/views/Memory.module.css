@@ -148,7 +148,7 @@
 }
 
 .cardResearch::before {
-    background: #3b82f6;
+    background: var(--accent-icarus);
 }
 
 /* Standard Blue for Research */
@@ -186,7 +186,7 @@
 }
 
 .catResearch {
-    color: #3b82f6;
+    color: var(--accent-icarus);
 }
 
 .catArchive {
@@ -259,6 +259,7 @@
     flex-direction: column;
     position: relative;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
 }
 
 .modalContent::before {
@@ -286,8 +287,8 @@
 }
 
 .modalResearch::before {
-    background: #3b82f6;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    background: var(--accent-icarus);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent-icarus) 40%, transparent);
 }
 
 .modalArchive::before {

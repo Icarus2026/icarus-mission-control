@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clock, Link as LinkIcon, Cpu, Play, FastForward } from 'lucide-react';
 import styles from './Settings.module.css';
 
@@ -102,6 +102,7 @@ export default function SettingsView() {
                                         type="checkbox"
                                         checked={job.active}
                                         onChange={() => toggleCronJob(job.id)}
+                                        aria-label={`Toggle ${job.name}`}
                                     />
                                     <span className={styles.slider}></span>
                                 </label>

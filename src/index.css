@@ -12,7 +12,8 @@
 
   --text-primary: #ededf0;
   --text-secondary: #9a9cae;
-  --text-tertiary: #6b6d7c;
+  --text-tertiary: #828594;
+  /* Improved contrast */
 
   /* Accents */
   --accent-icarus: #3b82f6;
@@ -23,6 +24,14 @@
   /* Purple */
   --accent-admin: #64748b;
   /* Gray */
+
+  /* Status Colors */
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+  --color-linkedin: #0a66c2;
+  --color-instagram: #e1306c;
+  --color-tiktok: #25F4EE;
 
   --accent-icarus-glow: rgba(59, 130, 246, 0.15);
   --accent-vero-glow: rgba(16, 185, 129, 0.15);
@@ -83,7 +92,7 @@ h6 {
   font-family: var(--font-display);
   font-weight: 500;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 a {
@@ -93,7 +102,7 @@ a {
 }
 
 a:hover {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 button {
@@ -151,8 +160,8 @@ button {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #a0a0ab 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  /* Removed AI-slop gradient, replaced with standard text */
+  margin: 0;
 }

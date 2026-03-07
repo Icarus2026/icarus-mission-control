@@ -189,8 +189,8 @@
 }
 
 .catProspects {
-    color: #f59e0b;
-    border-color: rgba(245, 158, 11, 0.3);
+    color: var(--color-warning);
+    border-color: color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 /* Amber */
@@ -252,6 +252,7 @@
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
     overflow: hidden;
 }
 
