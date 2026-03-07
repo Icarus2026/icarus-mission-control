@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
-import { Search, Mail, Phone, MapPin, X } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Search, Mail, Phone, X } from 'lucide-react';
 import styles from './CRM.module.css';
+import { supabase } from '../lib/supabase';
 
 type Category = 'All' | 'Clients' | 'Prospects' | 'Partners' | 'Suppliers';
 
@@ -11,89 +12,44 @@ interface Contact {
     company: string;
     email: string;
     phone: string;
-    location: string;
     category: Category;
     notes: string;
 }
 
-const mockContacts: Contact[] = [
-    {
-        id: 'c-1',
-        name: 'Dr. Aris Thorne',
-        role: 'Founder & CEO',
-        company: 'Vanguard Longevity',
-        email: 'aris@vanguardlongevity.com',
-        phone: '+1 (415) 555-0198',
-        location: 'San Francisco, CA',
-        category: 'Clients',
-        notes: 'Icarus Client since Q1 2025. Currently running PMax and Meta campaigns. Re-negotiating retainer for Q4 2026. Highly interested in standardizing their lead gen flow via Mick integrations.'
-    },
-    {
-        id: 'c-2',
-        name: 'Sarah Jenkins',
-        role: 'CMO',
-        company: 'Apex Supplements',
-        email: 'sarah.j@apexsupps.com',
-        phone: '+1 (310) 555-0244',
-        location: 'Los Angeles, CA',
-        category: 'Clients',
-        notes: 'Primary point of contact for Apex. Very metrics-driven. Needs weekly ROAS reports on Monday mornings. Upset if CPA creeps above $60. Mick handles automated daily reporting for her.'
-    },
-    {
-        id: 'c-3',
-        name: 'Marcus Vane',
-        role: 'CEO',
-        company: 'Primal Athletics',
-        email: 'marcus@primalathletics.co',
-        phone: '+1 (512) 555-0811',
-        location: 'Austin, TX',
-        category: 'Prospects',
-        notes: 'Met at the BioTech summit. Massive audience in the CrossFit space. High potential for a BPC-157 white-label deal under the VERO brand. Follow up next Tuesday regarding pricing tiers.'
-    },
-    {
-        id: 'c-4',
-        name: 'Dr. Elena Rostova',
-        role: 'Lead Researcher',
-        company: 'Biolab Inc. Europe',
-        email: 'e.rostova@biolab.eu',
-        phone: '+44 20 7946 0958',
-        location: 'London, UK',
-        category: 'Partners',
-        notes: 'Lumova Health research partner. Providing the core literature reviews and clinical trial data we use for the Preventative Screening landing pages. Requires strict compliance review.'
-    },
-    {
-        id: 'c-5',
-        name: 'Chen Wei',
-        role: 'Head of QA',
-        company: 'SinoPeptides Manufacturing',
-        email: 'c.wei@sinopeptides.cn',
-        phone: '+86 10 1234 5678',
-        location: 'Beijing, China',
-        category: 'Suppliers',
-        notes: 'Primary raw material supplier for VERO (BPC-157 and TB-500). Essential contact for batch testing purity reports (HPLC data). Needs 4 weeks lead time for bulk orders over 5kg.'
-    },
-    {
-        id: 'c-6',
-        name: 'James Holden',
-        role: 'Logistics Director',
-        company: 'Global Cold Chain',
-        email: 'j.holden@globalcold.com',
-        phone: '+1 (312) 555-0192',
-        location: 'Chicago, IL',
-        category: 'Suppliers',
-        notes: 'Handles our cold-chain shipping logistics for Lumova testing kits. Keep on good terms—he rushes our priority shipments when inventory is tight at the testing facilities.'
-    }
-];
-
 const categories: Category[] = ['All', 'Clients', 'Prospects', 'Partners', 'Suppliers'];
 
 export default function CRMView() {
+    const [contacts, setContacts] = useState<Contact[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<Category>('All');
     const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
 
+    useEffect(() => {
+        fetchContacts();
+    }, []);
+
+    const fetchContacts = async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('contacts')
+            .select('*')
+            .order('name', { ascending: true });
+
+        if (error) {
+            console.error('Error fetching contacts:', error);
+            setIsLoading(false);
+            return;
+        }
+
+        if (data) {
+            setContacts(data as Contact[]);
+        }
+        setIsLoading(false);
+    };
+
     const filteredContacts = useMemo(() => {
-        return mockContacts.filter(contact => {
+        return contacts.filter(contact => {
             const matchesCategory = activeCategory === 'All' || contact.category === activeCategory;
             const matchesSearch =
                 contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -116,7 +72,10 @@ export default function CRMView() {
     return (
         <div className={styles.crmView}>
             <header className={styles.header}>
-                <h1 className={`${styles.title} text-gradient`}>CRM & Network</h1>
+                <div className="flex items-center gap-4 mb-2">
+                    <h1 className={`${styles.title} text-gradient`} style={{ marginBottom: 0 }}>CRM & Network</h1>
+                    {isLoading && <span className="text-secondary text-sm animate-pulse">Syncing network...</span>}
+                </div>
                 <p className={styles.subtitle}>Manage clients, partners, and supply chain contacts across all brands.</p>
             </header>
 
@@ -221,15 +180,11 @@ export default function CRMView() {
                                 <span className={styles.infoLabel}>Contact Information</span>
                                 <div className={styles.infoValue}>
                                     <Mail size={16} />
-                                    {selectedContact.email}
+                                    {selectedContact.email || 'No email provided'}
                                 </div>
                                 <div className={styles.infoValue}>
                                     <Phone size={16} />
-                                    {selectedContact.phone}
-                                </div>
-                                <div className={styles.infoValue}>
-                                    <MapPin size={16} />
-                                    {selectedContact.location}
+                                    {selectedContact.phone || 'No phone provided'}
                                 </div>
                             </div>
 

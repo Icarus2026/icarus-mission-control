@@ -1,8 +1,8 @@
 # Progress
 
-## Current State: Planning
+## Current State: Phase 2 - Backend Integration (Supabase)
 
-### Completed
+### Phase 1: Completed
 - [x] Initial requirements gathering
 - [x] Defined global rules and tech stack (`gemini.md`)
 - [x] Detailed feature list and task plan (`task_plan.md`)
@@ -21,4 +21,14 @@
 - [x] Settings
 - [x] Review & Polish (Accessibility, Typography, Performance) (Animations, Transitions, Cleanup)
 
-### Next Steps
+
+### Phase 2: Next Steps
+- [x] Approve Supabase schema proposal
+- [x] Create `tasks` table
+- [x] Create `content_items` table
+- [x] Create `documents` table
+- [x] Create `contacts` table
+- [x] Create `agents` & `agent_logs` tables
+- [x] Create `cron_jobs` & `integrations` tables
+- [x] Set up Supabase client in React
+- [ ] Connect views to live data (Tasks Board completed)

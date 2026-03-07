@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { Columns, Calendar, Twitter, Linkedin, Instagram, PlaySquare, CalendarDays } from 'lucide-react';
 import styles from './ContentPipeline.module.css';
+import { supabase } from '../lib/supabase';
 
 // Types
 type Platform = 'X' | 'LinkedIn' | 'Instagram' | 'TikTok';
@@ -19,76 +20,11 @@ interface ColumnData {
     [key: string]: ContentItem[];
 }
 
-// Realistic Placeholder Data mapped to Pipeline columns
-const initialContent: ColumnData = {
-    idea: [
-        {
-            id: 'cn-1',
-            title: 'The AI ROI: Why your agency needs an automated agent orchestrator',
-            platform: 'LinkedIn',
-            assignDate: 'TBD',
-            project: 'Icarus Operations'
-        },
-        {
-            id: 'cn-2',
-            title: 'BPC-157 deep dive – recovery protocols and half-life explained',
-            platform: 'Instagram',
-            assignDate: 'TBD',
-            project: 'VERO Launch'
-        }
-    ],
-    research: [
-        {
-            id: 'cn-3',
-            title: 'Case study context: How we scaled a med-spa clinic using PMax',
-            platform: 'X',
-            assignDate: 'Oct 28',
-            project: 'Icarus Operations'
-        }
-    ],
-    brief: [
-        {
-            id: 'cn-4',
-            title: 'Video Script: The 3 supplements every founder needs for cognitive endurance',
-            platform: 'TikTok',
-            assignDate: 'Nov 02',
-            project: 'Lumova Health'
-        }
-    ],
-    draft: [
-        {
-            id: 'cn-5',
-            title: 'Carousel: Peptides vs Traditional TRT - The shift in optimizing men\'s health',
-            platform: 'Instagram',
-            assignDate: 'Oct 26',
-            project: 'VERO Launch'
-        },
-        {
-            id: 'cn-6',
-            title: 'The "Invisible" AI workflow saving us 40 hours a week in client reporting',
-            platform: 'LinkedIn',
-            assignDate: 'Oct 25',
-            project: 'Icarus Operations'
-        }
-    ],
-    scheduled: [
-        {
-            id: 'cn-7',
-            title: 'Thread: 5 Landing Page mistakes costing your brand conversions in Q4',
-            platform: 'X',
-            assignDate: 'Oct 24 • 09:30 AM',
-            project: 'Icarus Operations'
-        }
-    ],
-    published: [
-        {
-            id: 'cn-8',
-            title: 'Just launched our new longevity protocol stack @LumovaHealth',
-            platform: 'X',
-            assignDate: 'Oct 22 • 11:00 AM',
-            project: 'Lumova Health'
-        }
-    ]
+const formatDate = (dateString?: string | null) => {
+    if (!dateString) return 'TBD';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
 const columns = [
@@ -101,12 +37,55 @@ const columns = [
 ];
 
 export default function ContentPipeline() {
-    const [contentItems, setContentItems] = useState<ColumnData>(initialContent);
+    const [contentItems, setContentItems] = useState<ColumnData>({
+        idea: [], research: [], brief: [], draft: [], scheduled: [], published: []
+    });
     const [viewMode, setViewMode] = useState<'kanban' | 'calendar'>('kanban');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchContent();
+    }, []);
+
+    const fetchContent = async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('content_items')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error fetching content:', error);
+            setIsLoading(false);
+            return;
+        }
+
+        const newContent: ColumnData = {
+            idea: [], research: [], brief: [], draft: [], scheduled: [], published: []
+        };
+
+        if (data) {
+            data.forEach((item: any) => {
+                const colId = item.status.toLowerCase();
+                if (newContent[colId]) {
+                    newContent[colId].push({
+                        id: item.id,
+                        title: item.title,
+                        platform: item.platform,
+                        assignDate: formatDate(item.scheduled_date),
+                        project: item.project
+                    });
+                }
+            });
+        }
+
+        setContentItems(newContent);
+        setIsLoading(false);
+    };
 
     // Drag and Drop Handler
-    const onDragEnd = (result: DropResult) => {
-        const { source, destination } = result;
+    const onDragEnd = async (result: DropResult) => {
+        const { source, destination, draggableId } = result;
         if (!destination) return; // Dropped outside
 
         if (source.droppableId === destination.droppableId && source.index === destination.index) {
@@ -126,6 +105,20 @@ export default function ContentPipeline() {
             [source.droppableId]: sourceColumn,
             [destination.droppableId]: destColumn
         });
+
+        // Update in Supabase
+        if (source.droppableId !== destination.droppableId) {
+            const newStatus = destination.droppableId.charAt(0).toUpperCase() + destination.droppableId.slice(1);
+            const { error } = await supabase
+                .from('content_items')
+                .update({ status: newStatus })
+                .eq('id', draggableId);
+
+            if (error) {
+                console.error('Error updating status:', error);
+                fetchContent(); // Revert on error
+            }
+        }
     };
 
     // Platform Icon Helper
@@ -160,6 +153,7 @@ export default function ContentPipeline() {
                     >
                         <Calendar size={16} /> Calendar
                     </button>
+                    {isLoading && <span className="text-secondary ml-4 text-sm animate-pulse">Syncing pipeline...</span>}
                 </div>
             </div>
 

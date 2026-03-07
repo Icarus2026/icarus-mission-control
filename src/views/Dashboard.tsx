@@ -1,61 +1,78 @@
-
+import { useState, useEffect } from 'react';
 import { Activity, CheckCircle2, Clock, Terminal, TrendingUp } from 'lucide-react';
 import styles from './Dashboard.module.css';
+import { supabase } from '../lib/supabase';
 
 interface ActivityItem {
     id: string;
     time: string;
     message: string;
-    brand: 'Icarus' | 'VERO' | 'Lumova' | 'Mick';
+    brand: string;
     status: 'active' | 'pending' | 'error' | 'idle';
 }
 
-const mockActivityFeed: ActivityItem[] = [
-    {
-        id: 'act-1',
-        time: '10:42 AM',
-        message: 'Mick completed weekly PMax campaign analysis for VERO Launch. Report generated.',
-        brand: 'VERO',
-        status: 'active'
-    },
-    {
-        id: 'act-2',
-        time: '09:15 AM',
-        message: 'Drafting landing page copy for Lumova Health preventative screening guide.',
-        brand: 'Lumova',
-        status: 'pending'
-    },
-    {
-        id: 'act-3',
-        time: '08:30 AM',
-        message: 'Failed to sync latest CRM contacts from Hubspot API. Retrying in 15m.',
-        brand: 'Icarus',
-        status: 'error'
-    },
-    {
-        id: 'act-4',
-        time: '08:00 AM',
-        message: 'System cron: Nightly database backup completed successfully.',
-        brand: 'Mick',
-        status: 'idle'
-    },
-    {
-        id: 'act-5',
-        time: 'Yesterday',
-        message: 'Published LinkedIn carousel: "The AI ROI for Marketing Agencies".',
-        brand: 'Icarus',
-        status: 'active'
+const formatDashboardTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    // Use simple diff for today vs yesterday roughly
+    const isToday = date.getDate() === now.getDate() && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    if (isToday) {
+        return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     }
-];
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const isYesterday = date.getDate() === yesterday.getDate() && date.getMonth() === yesterday.getMonth() && date.getFullYear() === yesterday.getFullYear();
+    if (isYesterday) return 'Yesterday';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
 
 export default function Dashboard() {
+    const [feed, setFeed] = useState<ActivityItem[]>([]);
+    const [activeTasksCount, setActiveTasksCount] = useState<number>(0);
+    const [draftsCount, setDraftsCount] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchDashboardData();
+    }, []);
+
+    const fetchDashboardData = async () => {
+        setIsLoading(true);
+        const [logsRes, tasksRes, contentRes] = await Promise.all([
+            // In a real foreign key relationship we'd do: select(`*, agents(name)`)
+            // But if agents is not properly keyed we can just use the project string directly
+            supabase.from('agent_logs').select('*').order('created_at', { ascending: false }).limit(10),
+            supabase.from('tasks').select('id, status'),
+            supabase.from('content_items').select('id, status')
+        ]);
+
+        if (logsRes.data) {
+            setFeed(logsRes.data.map((log: any) => ({
+                id: log.id,
+                time: formatDashboardTime(log.created_at),
+                message: log.message,
+                brand: log.project || 'System',
+                status: log.status_type as any
+            })));
+        }
+
+        if (tasksRes.data) {
+            setActiveTasksCount(tasksRes.data.filter((t: any) => t.status !== 'Done').length);
+        }
+
+        if (contentRes.data) {
+            setDraftsCount(contentRes.data.filter((c: any) => c.status.toLowerCase() === 'draft').length);
+        }
+        setIsLoading(false);
+    };
+
     const getBadgeClass = (brand: string) => {
         switch (brand) {
             case 'Icarus': return styles.badgeIcarus;
             case 'VERO': return styles.badgeVero;
             case 'Lumova': return styles.badgeLumova;
             case 'Mick': return styles.badgeMick;
-            default: return '';
+            default: return styles.badgeMick;
         }
     };
 
@@ -72,7 +89,10 @@ export default function Dashboard() {
     return (
         <div className={styles.dashboard}>
             <header className={styles.header}>
-                <h1 className={`${styles.greeting} text-gradient`}>Good Morning, Commander.</h1>
+                <div className="flex items-center gap-4">
+                    <h1 className={`${styles.greeting} text-gradient mb-0`}>Good Morning, Commander.</h1>
+                    {isLoading && <span className="text-secondary text-sm animate-pulse mt-2">Syncing telemetry...</span>}
+                </div>
                 <p className={styles.subtitle}>All systems nominal. Here is your overview for today.</p>
             </header>
 
@@ -83,11 +103,11 @@ export default function Dashboard() {
                         <CheckCircle2 size={18} className={styles.icon} />
                     </div>
                     <div className={styles.metricValue}>
-                        12 <span className={styles.metricLabel}>pending</span>
+                        {activeTasksCount} <span className={styles.metricLabel}>pending</span>
                     </div>
                     <div className={styles.metricTrend}>
                         <TrendingUp size={14} className={styles.trendPositive} />
-                        <span className={styles.trendPositive}>+3</span> since yesterday
+                        <span className={styles.trendPositive}>Live sync</span> Active queue
                     </div>
                 </div>
 
@@ -97,7 +117,7 @@ export default function Dashboard() {
                         <Activity size={18} className={styles.icon} />
                     </div>
                     <div className={styles.metricValue}>
-                        8 <span className={styles.metricLabel}>drafts</span>
+                        {draftsCount} <span className={styles.metricLabel}>drafts</span>
                     </div>
                     <div className={styles.metricTrend}>
                         <span className={styles.trendNeutral}>4 ready for publish</span>
@@ -140,7 +160,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className={styles.feedList}>
-                    {mockActivityFeed.map(item => (
+                    {feed.map(item => (
                         <div key={item.id} className={styles.feedItem}>
                             <div className={`${styles.statusDot} ${getStatusDotClass(item.status)}`} />
                             <div className={styles.feedTime}>{item.time}</div>

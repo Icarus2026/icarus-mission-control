@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { Filter, Clock, ListFilter } from 'lucide-react';
 import styles from './TasksBoard.module.css';
+import { supabase } from '../lib/supabase';
 
 // Types and Interfaces
 type Priority = 'High' | 'Medium' | 'Low';
 type Assignee = 'Mick' | 'Simon';
 type Project = 'Icarus Operations' | 'VERO Launch' | 'Lumova Health';
+type Status = 'To Do' | 'In Progress' | 'Review' | 'Done';
 
 interface Task {
     id: string;
@@ -14,80 +16,13 @@ interface Task {
     project: Project;
     priority: Priority;
     assignee: Assignee;
-    dueDate: string;
+    due_date: string | null;
+    status: Status;
 }
 
 interface ColumnData {
     [key: string]: Task[];
 }
-
-// Initial Realistic Mock Data Data
-const initialTasks: ColumnData = {
-    todo: [
-        {
-            id: 't-1',
-            title: 'Analyze VERO competitor backlink profiles for Q3 SEO push',
-            project: 'VERO Launch',
-            priority: 'High',
-            assignee: 'Mick',
-            dueDate: 'Tomorrow'
-        },
-        {
-            id: 't-2',
-            title: 'Review Icarus Q2 ad spend ROI and optimize PMax campaigns',
-            project: 'Icarus Operations',
-            priority: 'High',
-            assignee: 'Simon',
-            dueDate: 'Oct 24'
-        },
-        {
-            id: 't-3',
-            title: 'Draft landing page copy for Lumova Health preventative screening guide',
-            project: 'Lumova Health',
-            priority: 'Medium',
-            assignee: 'Mick',
-            dueDate: 'Next Week'
-        }
-    ],
-    inProgress: [
-        {
-            id: 't-4',
-            title: 'Develop automated creative brief generator (Firecrawl integration)',
-            project: 'Icarus Operations',
-            priority: 'High',
-            assignee: 'Mick',
-            dueDate: 'Tomorrow'
-        },
-        {
-            id: 't-5',
-            title: 'Finalize VERO brand identity guidelines and color palette',
-            project: 'VERO Launch',
-            priority: 'Medium',
-            assignee: 'Simon',
-            dueDate: 'Oct 25'
-        }
-    ],
-    review: [
-        {
-            id: 't-6',
-            title: 'Lumova Health content strategy presentation for founders',
-            project: 'Lumova Health',
-            priority: 'High',
-            assignee: 'Simon',
-            dueDate: 'Today'
-        }
-    ],
-    done: [
-        {
-            id: 't-7',
-            title: 'Set up Vite + React scaffolding for Mission Control Dashboard',
-            project: 'Icarus Operations',
-            priority: 'High',
-            assignee: 'Mick',
-            dueDate: 'Completed'
-        }
-    ]
-};
 
 const columns = [
     { id: 'todo', title: 'To Do' },
@@ -98,15 +33,77 @@ const columns = [
 
 const projects = ['All Projects', 'Icarus Operations', 'VERO Launch', 'Lumova Health'];
 
+const columnIdToStatus: Record<string, Status> = {
+    'todo': 'To Do',
+    'inProgress': 'In Progress',
+    'review': 'Review',
+    'done': 'Done'
+};
+
+const statusToColumnId: Record<Status, string> = {
+    'To Do': 'todo',
+    'In Progress': 'inProgress',
+    'Review': 'review',
+    'Done': 'done'
+};
+
+const formatDate = (dateString?: string | null) => {
+    if (!dateString) return 'No date';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
 export default function TasksBoard() {
-    const [tasks, setTasks] = useState<ColumnData>(initialTasks);
+    const [tasks, setTasks] = useState<ColumnData>({
+        todo: [],
+        inProgress: [],
+        review: [],
+        done: []
+    });
+    const [isLoading, setIsLoading] = useState(true);
     const [activeProject, setActiveProject] = useState('All Projects');
     const [assigneeFilter, setAssigneeFilter] = useState('All');
     const [priorityFilter, setPriorityFilter] = useState('All');
 
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
+    const fetchTasks = async () => {
+        setIsLoading(true);
+        const { data, error } = await supabase
+            .from('tasks')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Error fetching tasks:', error);
+            setIsLoading(false);
+            return;
+        }
+
+        const newTasks: ColumnData = {
+            todo: [],
+            inProgress: [],
+            review: [],
+            done: []
+        };
+
+        if (data) {
+            data.forEach((task: any) => {
+                const colId = statusToColumnId[task.status as Status] || 'todo';
+                newTasks[colId].push(task);
+            });
+        }
+
+        setTasks(newTasks);
+        setIsLoading(false);
+    };
+
     // Drag and drop handler
-    const onDragEnd = (result: DropResult) => {
-        const { source, destination } = result;
+    const onDragEnd = async (result: DropResult) => {
+        const { source, destination, draggableId } = result;
         if (!destination) return; // Dropped outside list
         if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
@@ -116,6 +113,21 @@ export default function TasksBoard() {
             : [...tasks[destination.droppableId]];
 
         const [removed] = sourceColumn.splice(source.index, 1);
+
+        // Update status if it moved to a new column
+        if (source.droppableId !== destination.droppableId) {
+            removed.status = columnIdToStatus[destination.droppableId];
+
+            // Optimistically update DB
+            supabase
+                .from('tasks')
+                .update({ status: removed.status })
+                .eq('id', draggableId)
+                .then(({ error }) => {
+                    if (error) console.error('Error updating task status:', error);
+                });
+        }
+
         destColumn.splice(destination.index, 0, removed);
 
         setTasks({
@@ -134,6 +146,14 @@ export default function TasksBoard() {
             return matchProject && matchAssignee && matchPriority;
         });
     };
+
+    if (isLoading) {
+        return (
+            <div className={styles.board} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <p className={styles.subtitle}>Connecting to live database...</p>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.board}>
@@ -243,7 +263,7 @@ export default function TasksBoard() {
                                                                     </div>
                                                                     <div className={styles.dueDate}>
                                                                         <Clock size={12} />
-                                                                        {task.dueDate}
+                                                                        {formatDate(task.due_date)}
                                                                     </div>
                                                                 </div>
                                                             </div>

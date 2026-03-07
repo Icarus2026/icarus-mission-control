@@ -42,5 +42,19 @@ We are building a centralized command center to manage the AI Agent (Mick), Icar
 - **Cards details:** Name, role, company, email, notes.
 - **Categories:** Clients, Prospects, Partners, Suppliers.
 
+
 ### 8. Settings
 - **Features:** Cron job manager, integration status monitoring (n8n, Supabase, Slack), agent configuration.
+
+## Phase 2: Backend Integration (Supabase)
+
+To power the dynamic features of the dashboard, the following Supabase tables will be created:
+
+1. **`tasks`**: Powers Tasks Board, Dashboard (Active Tasks metric), and Calendar.
+2. **`content_items`**: Powers Content Pipeline, Dashboard (Pipeline Status metric), and Calendar.
+3. **`documents`**: Powers the Memory (Document Library) view.
+4. **`contacts`**: Powers the CRM view.
+5. **`agents`**: Powers the AI Team view and Dashboard (Mick Activity).
+6. **`agent_logs`**: Powers the Dashboard (Live Mission Feed).
+7. **`cron_jobs`**: Powers Settings (Cron Job Manager) and Calendar.
+8. **`integrations`**: Powers Settings (Integration Status).
