@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { NavLink } from 'react-router-dom';
 import {
     LayoutDashboard,
@@ -8,16 +8,25 @@ import {
     Database,
     Network,
     Users,
-    Settings
+    Settings,
+    Briefcase,
+    Cpu,
+    Search
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar() {
     const coreItems = [
         { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+        { name: 'Projects', path: '/projects', icon: Briefcase },
         { name: 'Tasks Board', path: '/tasks', icon: CheckSquare },
         { name: 'Content Pipeline', path: '/pipeline', icon: PenTool },
         { name: 'Calendar', path: '/calendar', icon: CalendarIcon },
+    ];
+
+    const agentItems = [
+        { name: 'Fleet', path: '/fleet', icon: Cpu },
+        { name: 'Research', path: '/research', icon: Search },
     ];
 
     const intelligenceItems = [
@@ -40,6 +49,20 @@ export default function Sidebar() {
             <div className={styles.navSection}>
                 <div className={styles.sectionTitle}>Workspace</div>
                 {coreItems.map(item => (
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+                    >
+                        <item.icon size={18} />
+                        {item.name}
+                    </NavLink>
+                ))}
+            </div>
+
+            <div className={styles.navSection}>
+                <div className={styles.sectionTitle}>Agents</div>
+                {agentItems.map(item => (
                     <NavLink
                         key={item.path}
                         to={item.path}
