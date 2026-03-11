@@ -17,7 +17,6 @@ interface Agent {
     last_output_summary: string | null;
     run_count: number;
     error_count: number;
-    created_at: string;
 }
 
 interface AgentLog {
@@ -222,7 +221,7 @@ export default function FleetPage() {
         const { data } = await supabase
             .from('agents')
             .select('*')
-            .order('created_at', { ascending: true });
+            .order('name', { ascending: true });
         if (data) {
             setAgents(data as Agent[]);
             setLastUpdated(new Date());
